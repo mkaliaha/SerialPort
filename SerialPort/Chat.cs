@@ -60,5 +60,13 @@ namespace SerialPort
             SPort.BaudRate = Convert.ToInt32(comboBox1.Text);
             SPort.Open();
         }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) Keys.Enter)
+            {
+                SendButton_Click(sender,e);
+            }
+        }
     }
 }

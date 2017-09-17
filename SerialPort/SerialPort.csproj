@@ -45,12 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteStuffer.cs" />
     <Compile Include="Chat.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Chat.Designer.cs">
       <DependentUpon>Chat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Crc16.cs" />
+    <Compile Include="ListChunker.cs" />
     <Compile Include="Serial.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -1,4 +1,5 @@
 ﻿using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 
 namespace SerialPort
@@ -31,7 +32,7 @@ namespace SerialPort
         {
             var data = new byte[BytesToRead];
             Read(data, 0, data.Length);
-            return data;
+            return ByteStuffer.Decode(data);
         }
 
         /// <summary>
@@ -44,8 +45,8 @@ namespace SerialPort
             {
                 if (BytesToRead == 0)
                 {
-                    RtsEnable = true;
-                    Write(dataBytes, 0, dataBytes.Length);
+                    var temp =ByteStuffer.Encode(dataBytes);
+                    Write(temp, 0, temp.Length);
                     Thread.Sleep(100);
                     RtsEnable = false;
                 }

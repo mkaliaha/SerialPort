@@ -32,5 +32,13 @@ namespace SerialPort
         }
 
         private void Button2_Click(object sender, EventArgs e) => Close();
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) Keys.Enter)
+            {
+                Button1_Click(sender,e);
+            }
+        }
     }
 }
