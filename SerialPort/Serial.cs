@@ -1,5 +1,4 @@
 ﻿using System.IO.Ports;
-using System.Linq;
 using System.Threading;
 
 namespace SerialPort
@@ -7,12 +6,7 @@ namespace SerialPort
     public class Serial : System.IO.Ports.SerialPort
     {
         /// <summary>
-        /// Field to store lost bytest
-        /// </summary>
-        public byte[] LostBytes { get; set; }
-
-        /// <summary>
-        /// Class consrtuctor
+        ///     Class consrtuctor
         /// </summary>
         /// <param name="portName">Name of port</param>
         /// <param name="baudRate">Baud rate</param>
@@ -25,7 +19,12 @@ namespace SerialPort
         }
 
         /// <summary>
-        /// Read data from port
+        ///     Field to store lost bytest
+        /// </summary>
+        public byte[] LostBytes { get; set; }
+
+        /// <summary>
+        ///     Read data from port
         /// </summary>
         /// <returns>Byte array with data</returns>
         public byte[] ReadBytes()
@@ -36,7 +35,7 @@ namespace SerialPort
         }
 
         /// <summary>
-        /// Write data to port
+        ///     Write data to port
         /// </summary>
         /// <param name="dataBytes">Byte array with data</param>
         public void WriteData(byte[] dataBytes)
@@ -45,7 +44,7 @@ namespace SerialPort
             {
                 if (BytesToRead == 0)
                 {
-                    var temp =ByteStuffer.Encode(dataBytes);
+                    var temp = ByteStuffer.Encode(dataBytes);
                     Write(temp, 0, temp.Length);
                     Thread.Sleep(100);
                     RtsEnable = false;
