@@ -5,6 +5,7 @@ namespace SerialPort
 {
     public class Serial : System.IO.Ports.SerialPort
     {
+        /// <inheritdoc />
         /// <summary>
         ///     Class consrtuctor
         /// </summary>
