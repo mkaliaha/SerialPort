@@ -63,6 +63,7 @@ namespace SerialPort
                 if (counter == 2)
                 {
                     var chunk = inp.GetRange(prevPos, i + 1 - prevPos);
+                    var adress = chunk[1];
                     chunk.RemoveRange(0, 4);
                     chunk.RemoveAt(chunk.Count - 1); //Get rid from header and ending flag
                     for (var j = 0; j < chunk.Count; j++) //Decode
@@ -72,7 +73,8 @@ namespace SerialPort
                             if (chunk[j] == FlagCh) chunk[j] = Flag;
                         }
                     if (!t.ComputeChecksumBytes(chunk.GetRange(0, chunk.Count - 2).ToArray())
-                        .SequenceEqual(chunk.GetRange(chunk.Count - 2, 2))) //Check crc16
+                            .SequenceEqual(chunk.GetRange(chunk.Count - 2, 2)) &&
+                        adress != 0xFF) //Check crc16 and adress
                     {
                         prevPos = i + 1; //Skip packet if wrong crc
                         counter = 0;

@@ -27,8 +27,12 @@ namespace SerialPort
 
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs args)
         {
-            richTextBox1.AppendText(
-                DateTime.Now.ToString("T") + ": " + Encoding.UTF8.GetString(SPort.ReadBytes()) + "\n");
+            var temp = Encoding.UTF8.GetString(SPort.ReadBytes());
+            if (temp != "")
+            {
+                richTextBox1.AppendText(
+                    DateTime.Now.ToString("T") + ": " + temp + "\n");
+            }
         }
 
         private void Chat_FormClosed(object sender, FormClosedEventArgs e)
