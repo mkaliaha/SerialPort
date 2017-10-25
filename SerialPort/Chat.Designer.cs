@@ -38,7 +38,6 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.debugBox = new System.Windows.Forms.RichTextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -114,7 +113,6 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.comboBox1, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.debugBox, 0, 2);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(631, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -162,16 +160,6 @@
             this.comboBox1.TabIndex = 1;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
-            // debugBox
-            // 
-            this.debugBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.debugBox.Location = new System.Drawing.Point(3, 99);
-            this.debugBox.Name = "debugBox";
-            this.debugBox.ReadOnly = true;
-            this.debugBox.Size = new System.Drawing.Size(119, 169);
-            this.debugBox.TabIndex = 2;
-            this.debugBox.Text = "";
-            // 
             // Chat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -204,6 +192,5 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.RichTextBox debugBox;
     }
 }

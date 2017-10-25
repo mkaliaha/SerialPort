@@ -1,10 +1,18 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Ports;
 using System.Threading;
 
 namespace SerialPort
 {
     public class Serial : System.IO.Ports.SerialPort
     {
+        private const int AttemptsToSend = 10;
+        private const byte JamSignal = 0xA7;
+        private const byte EndMessage = 0x0A;
+        private const int CollisionGapTime = 20;
+        private const int SlotTime = 50;
+
         /// <summary>
         ///     Class consrtuctor
         /// </summary>
@@ -19,19 +27,28 @@ namespace SerialPort
         }
 
         /// <summary>
-        ///     Field to store lost bytest
-        /// </summary>
-        public byte[] LostBytes { get; set; }
-
-        /// <summary>
         ///     Read data from port
         /// </summary>
         /// <returns>Byte array with data</returns>
         public byte[] ReadBytes()
         {
-            var data = new byte[BytesToRead];
-            Read(data, 0, data.Length);
-            return data;
+            var msg = new List<byte>();
+            while (true)
+            {
+                if (BytesToRead == 0)
+                    continue;
+                var receiveByte = (byte) ReadByte();
+                if (receiveByte == EndMessage)
+                {
+                    msg.Add(EndMessage);
+                    break;
+                }
+                if (receiveByte == JamSignal)
+                    msg.RemoveAt(msg.Count - 1);
+                else
+                    msg.Add(receiveByte);
+            }
+            return msg.ToArray();
         }
 
         /// <summary>
@@ -40,23 +57,39 @@ namespace SerialPort
         /// <param name="dataBytes">Byte array with data</param>
         public void WriteData(byte[] dataBytes)
         {
-            for (var i = 0; i < dataBytes.Length; i++)
-                while (true)
+            RtsEnable = true;
+            foreach (var t in dataBytes)
+                for (var j = 0; j < AttemptsToSend; j++)
                 {
-                    if (BytesToRead == 0)
+                    while (IsChannelFree())
                     {
-                        RtsEnable = true;
-                        Write(dataBytes, i, 1);
-                        Thread.Sleep(100);
-                        RtsEnable = false;
                     }
-                    else
-                    {
-                        LostBytes = ReadBytes();
-                        continue;
-                    }
-                    break;
+
+                    Write(new[] {t}, 0, 1);
+
+                    Console.Write((char) t + "\n");
+
+                    Thread.Sleep(CollisionGapTime);
+                    if (!IsCollision())
+                        break;
+                    Write(new[] {JamSignal}, 0, 1);
+
+                    Console.Write((char) JamSignal + "\n");
+
+                    Thread.Sleep(new Random().Next(0, (int) Math.Pow(2, Math.Min(j, 10))) * SlotTime);
+                    if (j == AttemptsToSend - 1) throw new Exception("Attempts ended!");
                 }
+            RtsEnable = false;
+        }
+
+        private bool IsCollision()
+        {
+            return DateTime.Now.TimeOfDay.Milliseconds % 2 == 0;
+        }
+
+        private bool IsChannelFree()
+        {
+            return DateTime.Now.TimeOfDay.Milliseconds % 2 != 0;
         }
     }
 }

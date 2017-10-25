@@ -27,7 +27,12 @@ namespace SerialPort
 
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs args)
         {
-            richTextBox1.AppendText(Encoding.UTF8.GetString(SPort.ReadBytes()));
+            void Act()
+            {
+                richTextBox1.AppendText(Encoding.UTF8.GetString(SPort.ReadBytes()));
+            }
+
+            richTextBox1.Invoke((Action) Act);
         }
 
         private void Chat_FormClosed(object sender, FormClosedEventArgs e)
@@ -49,12 +54,6 @@ namespace SerialPort
 
             var data = Encoding.UTF8.GetBytes(text);
             SPort.WriteData(data);
-            if (SPort.LostBytes != null)
-            {
-                richTextBox1.AppendText("LOST (" + SPort.PortName + ") " + DateTime.Now.ToString("T") + ": " +
-                                        SPort.LostBytes + "\n");
-                SPort.LostBytes = null;
-            }
             richTextBox1.AppendText("ME (" + SPort.PortName + ") " + DateTime.Now.ToString("T") + ": " + text);
             textBox1.Clear();
         }
