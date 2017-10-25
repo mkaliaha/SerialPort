@@ -6,12 +6,7 @@ namespace SerialPort
     public class Serial : System.IO.Ports.SerialPort
     {
         /// <summary>
-        /// Field to store lost bytest
-        /// </summary>
-        public byte[] LostBytes { get; set; }
-
-        /// <summary>
-        /// Class consrtuctor
+        ///     Class consrtuctor
         /// </summary>
         /// <param name="portName">Name of port</param>
         /// <param name="baudRate">Baud rate</param>
@@ -24,7 +19,12 @@ namespace SerialPort
         }
 
         /// <summary>
-        /// Read data from port
+        ///     Field to store lost bytest
+        /// </summary>
+        public byte[] LostBytes { get; set; }
+
+        /// <summary>
+        ///     Read data from port
         /// </summary>
         /// <returns>Byte array with data</returns>
         public byte[] ReadBytes()
@@ -35,27 +35,28 @@ namespace SerialPort
         }
 
         /// <summary>
-        /// Write data to port
+        ///     Write data to port
         /// </summary>
         /// <param name="dataBytes">Byte array with data</param>
         public void WriteData(byte[] dataBytes)
         {
-            while (true)
-            {
-                if (BytesToRead == 0)
+            for (var i = 0; i < dataBytes.Length; i++)
+                while (true)
                 {
-                    RtsEnable = true;
-                    Write(dataBytes, 0, dataBytes.Length);
-                    Thread.Sleep(100);
-                    RtsEnable = false;
+                    if (BytesToRead == 0)
+                    {
+                        RtsEnable = true;
+                        Write(dataBytes, i, 1);
+                        Thread.Sleep(100);
+                        RtsEnable = false;
+                    }
+                    else
+                    {
+                        LostBytes = ReadBytes();
+                        continue;
+                    }
+                    break;
                 }
-                else
-                {
-                    LostBytes = ReadBytes();
-                    continue;
-                }
-                break;
-            }
         }
     }
 }

@@ -38,6 +38,7 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.debugBox = new System.Windows.Forms.RichTextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -113,12 +114,14 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.comboBox1, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.debugBox, 0, 2);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(631, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 2;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.12915F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 84.87085F));
+            this.tableLayoutPanel3.RowCount = 3;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 68.96552F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 31.03448F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 174F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(125, 271);
             this.tableLayoutPanel3.TabIndex = 2;
             // 
@@ -128,7 +131,7 @@
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 40);
+            this.label1.Size = new System.Drawing.Size(119, 66);
             this.label1.TabIndex = 0;
             this.label1.Text = "Baud rate (9600 default):";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -153,11 +156,21 @@
             "38400",
             "57600",
             "115200"});
-            this.comboBox1.Location = new System.Drawing.Point(3, 43);
+            this.comboBox1.Location = new System.Drawing.Point(3, 69);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(119, 24);
             this.comboBox1.TabIndex = 1;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
+            // 
+            // debugBox
+            // 
+            this.debugBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.debugBox.Location = new System.Drawing.Point(3, 99);
+            this.debugBox.Name = "debugBox";
+            this.debugBox.ReadOnly = true;
+            this.debugBox.Size = new System.Drawing.Size(119, 169);
+            this.debugBox.TabIndex = 2;
+            this.debugBox.Text = "";
             // 
             // Chat
             // 
@@ -191,5 +204,6 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.RichTextBox debugBox;
     }
 }
