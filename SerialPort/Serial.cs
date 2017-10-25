@@ -5,9 +5,13 @@ namespace SerialPort
 {
     public class Serial : System.IO.Ports.SerialPort
     {
-        /// <inheritdoc />
         /// <summary>
-        ///     Class consrtuctor
+        /// Field to store lost bytest
+        /// </summary>
+        public byte[] LostBytes { get; set; }
+
+        /// <summary>
+        /// Class consrtuctor
         /// </summary>
         /// <param name="portName">Name of port</param>
         /// <param name="baudRate">Baud rate</param>
@@ -20,23 +24,18 @@ namespace SerialPort
         }
 
         /// <summary>
-        ///     Field to store lost bytest
-        /// </summary>
-        public byte[] LostBytes { get; set; }
-
-        /// <summary>
-        ///     Read data from port
+        /// Read data from port
         /// </summary>
         /// <returns>Byte array with data</returns>
         public byte[] ReadBytes()
         {
             var data = new byte[BytesToRead];
             Read(data, 0, data.Length);
-            return ByteStuffer.Decode(data);
+            return data;
         }
 
         /// <summary>
-        ///     Write data to port
+        /// Write data to port
         /// </summary>
         /// <param name="dataBytes">Byte array with data</param>
         public void WriteData(byte[] dataBytes)
@@ -45,8 +44,8 @@ namespace SerialPort
             {
                 if (BytesToRead == 0)
                 {
-                    var temp = ByteStuffer.Encode(dataBytes);
-                    Write(temp, 0, temp.Length);
+                    RtsEnable = true;
+                    Write(dataBytes, 0, dataBytes.Length);
                     Thread.Sleep(100);
                     RtsEnable = false;
                 }

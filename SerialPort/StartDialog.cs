@@ -6,12 +6,9 @@ namespace SerialPort
 {
     public partial class StartDialog : Form
     {
-        public StartDialog()
-        {
-            InitializeComponent();
-        }
-
         private Serial SerialPort { get; set; }
+
+        public StartDialog() => InitializeComponent();
 
         private void StartDialog_Load(object sender, EventArgs e)
         {
@@ -34,15 +31,6 @@ namespace SerialPort
             }
         }
 
-        private void Button2_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char) Keys.Enter)
-                Button1_Click(sender, e);
-        }
+        private void Button2_Click(object sender, EventArgs e) => Close();
     }
 }
