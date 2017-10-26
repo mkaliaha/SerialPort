@@ -29,7 +29,9 @@ namespace SerialPort
         {
             void Act()
             {
-                richTextBox1.AppendText(Encoding.UTF8.GetString(SPort.ReadBytes()));
+                var temp = Encoding.UTF8.GetString(SPort.ReadBytes());
+                if (temp != "\n")
+                    richTextBox1.AppendText(temp);
             }
 
             richTextBox1.Invoke((Action) Act);

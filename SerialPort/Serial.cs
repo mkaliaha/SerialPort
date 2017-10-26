@@ -9,7 +9,7 @@ namespace SerialPort
     {
         private const int AttemptsToSend = 10;
         private const byte JamSignal = 0xA7;
-        private const byte EndMessage = 0x0A;
+        private const byte EndMessage = 10;
         private const int CollisionGapTime = 20;
         private const int SlotTime = 50;
 
@@ -38,15 +38,19 @@ namespace SerialPort
                 if (BytesToRead == 0)
                     continue;
                 var receiveByte = (byte) ReadByte();
+
+                if (receiveByte == JamSignal)
+                {
+                    if (msg.Count > 0)
+                        msg.RemoveAt(msg.Count - 1);
+                    continue;
+                }
                 if (receiveByte == EndMessage)
                 {
-                    msg.Add(EndMessage);
+                    msg.Add(receiveByte);
                     break;
                 }
-                if (receiveByte == JamSignal)
-                    msg.RemoveAt(msg.Count - 1);
-                else
-                    msg.Add(receiveByte);
+                msg.Add(receiveByte);
             }
             return msg.ToArray();
         }
@@ -57,7 +61,7 @@ namespace SerialPort
         /// <param name="dataBytes">Byte array with data</param>
         public void WriteData(byte[] dataBytes)
         {
-            RtsEnable = true;
+            // RtsEnable = true;
             foreach (var t in dataBytes)
                 for (var j = 0; j < AttemptsToSend; j++)
                 {
@@ -79,7 +83,7 @@ namespace SerialPort
                     Thread.Sleep(new Random().Next(0, (int) Math.Pow(2, Math.Min(j, 10))) * SlotTime);
                     if (j == AttemptsToSend - 1) throw new Exception("Attempts ended!");
                 }
-            RtsEnable = false;
+            //RtsEnable = false;
         }
 
         private bool IsCollision()
