@@ -51,7 +51,7 @@ namespace SerialPort
         private void SendButton_Click(object sender, EventArgs e)
         {
             var text = textBox1.Text + "\n";
-            if (string.Equals(text, "", StringComparison.Ordinal))
+            if (string.Equals(text, "\n", StringComparison.Ordinal))
                 return;
 
             var data = Encoding.UTF8.GetBytes(text);

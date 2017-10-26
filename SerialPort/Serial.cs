@@ -8,8 +8,8 @@ namespace SerialPort
     public class Serial : System.IO.Ports.SerialPort
     {
         private const int AttemptsToSend = 10;
-        private const byte JamSignal = 0xA7;
-        private const byte EndMessage = 10;
+        private const byte JamSignal = 0xA1;
+        private const byte EndMessage = 0x0A;
         private const int CollisionGapTime = 20;
         private const int SlotTime = 50;
 
