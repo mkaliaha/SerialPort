@@ -51,6 +51,7 @@
     <Compile Include="Chat.Designer.cs">
       <DependentUpon>Chat.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageComposer.cs" />
     <Compile Include="Serial.cs">
       <SubType>Component</SubType>
     </Compile>

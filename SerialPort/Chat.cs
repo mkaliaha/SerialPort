@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -7,15 +9,26 @@ namespace SerialPort
 {
     public partial class Chat : Form
     {
-        public Chat(Serial port)
+        private readonly List<byte[]> _buffer = new List<byte[]>();
+        private byte[] _message;
+        private int _sender;
+        public PackageComposer Composer = new PackageComposer();
+        public bool RingInited;
+
+        public Chat(Serial input, Serial output, int num)
         {
-            SPort = port;
-            SPort.ErrorReceived += SerialPort_ErrorReceived;
-            SPort.DataReceived += SerialPort_DataReceived;
+            InputSerial = input;
+            InputSerial.DataReceived += SerialPort_DataReceived;
+            OutputSerial = output;
+            MachineNumber = num;
+
             InitializeComponent();
+            if (MachineNumber != 1) InitButton.Enabled = false;
         }
 
-        public Serial SPort { get; }
+        public Serial InputSerial { get; }
+        public Serial OutputSerial { get; }
+        public int MachineNumber { get; }
 
         public void SerialPort_ErrorReceived(object obj, SerialErrorReceivedEventArgs args)
         {
@@ -27,14 +40,38 @@ namespace SerialPort
 
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs args)
         {
-            void Act()
+            var data = InputSerial.ReadBytes();
+            if (Composer.IsToken(data))
             {
-                var temp = Encoding.UTF8.GetString(SPort.ReadBytes());
-                if (temp != "\n")
-                    richTextBox1.AppendText(temp);
+                if (!RingInited)
+                {
+                    RingInited = true;
+                }
+                else if (_buffer.Count > 0)
+                {
+                    OutputSerial.WriteData(_buffer.First());
+                    _buffer.RemoveAt(0);
+                    return;
+                }
+                OutputSerial.WriteData(data);
+                return;
             }
-
-            richTextBox1.Invoke((Action) Act);
+            if (!Composer.IsMessage(data)) return;
+            if (Composer.GetSourceAddress(data) == MachineNumber)
+            {
+                OutputSerial.WriteData(Composer.Token);
+            }
+            else if (Composer.GetDestAddress(data) == MachineNumber)
+            {
+                _message = Composer.GetDataFromMessage(data);
+                _sender = Composer.GetSourceAddress(data);
+                OutputSerial.WriteData(data);
+                richTextBox1.Invoke((Action) ShowIncoming);
+            }
+            else
+            {
+                OutputSerial.WriteData(data);
+            }
         }
 
         private void Chat_FormClosed(object sender, FormClosedEventArgs e)
@@ -50,26 +87,41 @@ namespace SerialPort
 
         private void SendButton_Click(object sender, EventArgs e)
         {
+            if (!RingInited)
+            {
+                richTextBox1.AppendText("Init ring first!\n");
+                return;
+            }
             var text = textBox1.Text + "\n";
             if (string.Equals(text, "\n", StringComparison.Ordinal))
                 return;
-
+            if (Convert.ToByte(DesCombobox.Text) == MachineNumber)
+            {
+                richTextBox1.AppendText("Can't send to yourself");
+                return;
+            }
             var data = Encoding.UTF8.GetBytes(text);
-            SPort.WriteData(data);
-            richTextBox1.AppendText("ME (" + SPort.PortName + ") " + DateTime.Now.ToString("T") + ": " + text);
+            _buffer.Add(Composer.ComposeMessage(data, Convert.ToByte(DesCombobox.Text), (byte) MachineNumber));
+            richTextBox1.AppendText("SEND to " + DesCombobox.Text + ": " + DateTime.Now.ToString("T") + ": " + text);
             textBox1.Clear();
+        }
+
+        private void ShowIncoming()
+        {
+            richTextBox1.AppendText("GOT FROM " + _sender + ": " + DateTime.Now.ToString("T") + ": " +
+                                    Encoding.UTF8.GetString(_message));
         }
 
         private void Chat_Load(object sender, EventArgs e)
         {
-            Text = SPort.PortName;
+            Text = MachineNumber.ToString();
         }
 
-        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void InitButton_Click(object sender, EventArgs e)
         {
-            SPort.Close();
-            SPort.BaudRate = Convert.ToInt32(comboBox1.Text);
-            SPort.Open();
+            OutputSerial.WriteData(Composer.Token);
+            RingInited = true;
+            InitButton.Enabled = false;
         }
     }
 }
